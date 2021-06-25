@@ -1,7 +1,7 @@
-#Uploader
+# Uploader
 This app was made to help you to keep and orginize all your assets (images/videos) in one place. The app use S3 as a storage.
 
-##Features
+## Features
 [ ] Boards (like folders, to orginize assets)
 [ ] Upload assets (images/videos) to S3
 [ ] Sharing boards between peoples
