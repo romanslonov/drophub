@@ -1,33 +1,45 @@
-import { Injectable } from '@nestjs/common';
-
-export type User = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import CreateUserDto from './dto/create-user.dto';
+import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      id: 1,
-      firstName: 'john',
-      lastName: 'changeme',
-      email: 'john@gmail.com',
-      password: '1234',
-    },
-    {
-      id: 2,
-      firstName: 'maria',
-      lastName: 'guess',
-      email: 'maria@gmail.com',
-      password: '1234',
-    },
-  ];
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
-  async findOne(email: string) {
-    return this.users.find((user) => user.email === email);
+  async findByEmail(email: string) {
+    const user = await this.usersRepository.findOne({ email });
+    if (user) {
+      return user;
+    }
+    throw new HttpException(
+      'User with this email does not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  async findById(id: number) {
+    const user = await this.usersRepository.findOne({ id });
+    if (user) {
+      return user;
+    }
+    throw new HttpException(
+      'User with this id does not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  async create(userData: CreateUserDto) {
+    const newUser = this.usersRepository.create(userData);
+    await this.usersRepository.save(newUser);
+    return newUser;
+  }
+
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find();
   }
 }
