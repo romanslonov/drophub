@@ -18,6 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const { password, ...user } = await this.usersService.findById(
       payload.userId,
     );
-    return { user };
+    return user;
   }
 }
