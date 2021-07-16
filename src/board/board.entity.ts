@@ -1,3 +1,4 @@
+import { File } from 'src/file/file.entity';
 import { User } from 'src/users/user.entity';
 import {
   Entity,
@@ -30,4 +31,8 @@ export class Board {
   @ManyToMany(() => User, (user) => user.sharedBoards)
   @JoinTable()
   users: User[];
+
+  @ManyToMany(() => File, (file) => file.board)
+  @JoinTable()
+  files: File[];
 }

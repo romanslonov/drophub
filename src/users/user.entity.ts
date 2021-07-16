@@ -1,4 +1,5 @@
 import { Board } from 'src/board/board.entity';
+import { File } from 'src/file/file.entity';
 import {
   Entity,
   Column,
@@ -26,6 +27,9 @@ export class User {
 
   @OneToMany(() => Board, (board) => board.owner)
   boards: Board[];
+
+  @OneToMany(() => File, (file) => file.author)
+  files: File[];
 
   @ManyToMany(() => Board, (board) => board.users)
   sharedBoards: Board[];

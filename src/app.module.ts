@@ -10,6 +10,11 @@ import { ConfigModule } from '@nestjs/config';
 import { BoardController } from './board/board.controller';
 import { Board } from './board/board.entity';
 import { BoardModule } from './board/board.module';
+import { UploadService } from './upload/upload.service';
+import { UploadModule } from './upload/upload.module';
+import { FileController } from './file/file.controller';
+import { File } from './file/file.entity';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -24,10 +29,18 @@ import { BoardModule } from './board/board.module';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Board],
+      entities: [User, Board, File],
       synchronize: true,
     }),
+    UploadModule,
+    FileModule,
   ],
-  controllers: [AppController, ProfileController, BoardController],
+  controllers: [
+    AppController,
+    ProfileController,
+    BoardController,
+    FileController,
+  ],
+  providers: [AppService, UploadService],
 })
 export class AppModule {}
