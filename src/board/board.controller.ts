@@ -24,15 +24,30 @@ export class BoardController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Request() req) {
-    const boards = await this.boardService.findAll(req.user);
+  async getBoards(@Request() req) {
+    const boards = await this.boardService.getBoards(req.user);
     return boards;
   }
 
+  // @UseGuards(JwtAuthGuard)
+  // @Post('/:id/')
+  // async share(@Param('id') id: number, @Body() data: { userIds: number[] }) {
+  //   const board = await this.boardService.shareWithUsers(id, data.userIds);
+  //   return board;
+  // }
+
   @UseGuards(JwtAuthGuard)
-  @Post(':id')
-  async share(@Param('id') id: number, @Body() data: { userIds: number[] }) {
-    const board = await this.boardService.shareWithUsers(id, data.userIds);
+  @Get('/:id/')
+  async getBoard(@Param('id') id: number, @Request() req) {
+    const board = await this.boardService.getBoard(id, req.user.id);
+
     return board;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id/files/')
+  async getBoardFiles(@Param('id') id: number, @Request() req) {
+    const files = await this.boardService.getBoardFiles(id, req.user.id);
+    return files;
   }
 }

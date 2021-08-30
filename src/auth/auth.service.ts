@@ -1,14 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import CreateUserDto from 'src/users/dto/create-user.dto';
+import CreateUserDto from 'src/user/dto/create-user.dto';
 import { MariadbErrorCode } from 'src/database/mariadb-errors.enum';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private userService: UserService,
     private jwtService: JwtService,
   ) {}
 
@@ -22,7 +22,7 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     try {
-      const { password, ...user } = await this.usersService.create({
+      const { password, ...user } = await this.userService.create({
         ...data,
         password: hashedPassword,
       });
@@ -44,7 +44,7 @@ export class AuthService {
 
   async getAuthenticatedUser(email: string, plainTextPassword: string) {
     try {
-      const { password, ...user } = await this.usersService.findByEmail(email);
+      const { password, ...user } = await this.userService.findByEmail(email);
       await this.verifyPassword(plainTextPassword, password);
 
       return user;

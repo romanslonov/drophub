@@ -36,9 +36,13 @@ export class FileController {
         console.error(error);
       });
 
-    const saving = (uploaded as ManagedUpload.SendData[]).map((file) =>
-      this.fileService.create(req.user.id, boardId, { name: file.Key }),
-    );
+    const saving = (uploaded as ManagedUpload.SendData[]).map((item) => {
+      const file = files.find((f) => f.originalname === item.Key);
+      return this.fileService.create(req.user.id, boardId, {
+        name: item.Key,
+        size: file.size,
+      });
+    });
 
     const saved = await Promise.all(saving);
 
