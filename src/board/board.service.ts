@@ -25,11 +25,76 @@ export class BoardService {
   }
 
   async getBoards(user: User): Promise<Board[]> {
-    const boards = this.knex('boards')
-      .select('id', 'name')
+    const boards = await this.knex('boards')
+      .select('id', 'name', 'starred')
       .where({ ownerId: user.id });
 
-    return boards;
+    const files = await this.knex
+      .select('id', 'name', 'key', 'size', 'ownerId', 'boardId')
+      .from('files')
+      .orderBy('id', 'desc')
+      .limit(4)
+      .whereIn(
+        'boardId',
+        boards.map((board) => board.id),
+      );
+
+    const totals = await Promise.all(
+      boards.map((board) =>
+        this.knex('files')
+          .count('* as count')
+          .where('boardId', board.id)
+          .first(),
+      ),
+    );
+
+    const boardsWithFiles = boards.map((board, index) => ({
+      ...board,
+      count: totals[index]['count'],
+      starred: Boolean(board.starred),
+      files: files
+        .filter((file) => file.boardId === board.id)
+        .map(({ boardId, ...file }) => file),
+    }));
+
+    return boardsWithFiles;
+  }
+
+  async getStarredBoards(user: User, limit: number): Promise<Board[]> {
+    const boards = await this.knex('boards')
+      .select('id', 'name', 'starred')
+      .limit(limit)
+      .where({ ownerId: user.id, starred: 1 });
+
+    const files = await this.knex
+      .select('id', 'name', 'key', 'size', 'ownerId', 'boardId')
+      .from('files')
+      .orderBy('id', 'desc')
+      .limit(4)
+      .whereIn(
+        'boardId',
+        boards.map((board) => board.id),
+      );
+
+    const totals = await Promise.all(
+      boards.map((board) =>
+        this.knex('files')
+          .count('* as count')
+          .where('boardId', board.id)
+          .first(),
+      ),
+    );
+
+    const boardsWithFiles = boards.map((board, index) => ({
+      ...board,
+      count: totals[index]['count'],
+      starred: Boolean(board.starred),
+      files: files
+        .filter((file) => file.boardId === board.id)
+        .map(({ boardId, ...file }) => file),
+    }));
+
+    return boardsWithFiles;
   }
 
   // async shareWithUsers(boardId: number, userIds: number[]): Promise<Board> {
@@ -46,17 +111,24 @@ export class BoardService {
     const board = await this.knex('boards')
       .where({ id: boardId, ownerId: userId })
       .first();
+
     if (!board) {
       throw new HttpException('Board was not found', HttpStatus.NOT_FOUND);
     }
-    return board;
+
+    const total = await this.knex('files')
+      .count('* as count')
+      .where('boardId', board.id)
+      .first();
+
+    return { ...board, count: total['count'] } as Board;
   }
 
   async getBoardFiles(boardId: number, userId: number) {
     await this.getBoard(boardId, userId);
 
     const files = await this.knex
-      .select('id', 'name', 'size', 'ownerId')
+      .select('id', 'name', 'key', 'size', 'ownerId')
       .from('files')
       .where({ boardId });
 

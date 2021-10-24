@@ -12,6 +12,7 @@ export async function up(knex: Knex) {
     table.increments('id').primary();
     table.string('name', 255).notNullable();
     table.integer('ownerId').unsigned().notNullable();
+    table.boolean('starred').notNullable();
     // foreign key
     table.foreign('ownerId').references('users.id');
   });

@@ -26,7 +26,15 @@ export class BoardController {
   @Get()
   async getBoards(@Request() req) {
     const boards = await this.boardService.getBoards(req.user);
-    return boards;
+  @UseGuards(JwtAuthGuard)
+  @Get('starred')
+  async getBoardsOverview(@Query() query, @Request() req) {
+    const boards = await this.boardService.getStarredBoards(
+      req.user,
+      query.limit,
+    );
+
+    return { boards };
   }
 
   // @UseGuards(JwtAuthGuard)
