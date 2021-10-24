@@ -13,7 +13,7 @@ export class FileService {
       boardId,
     });
     const { ownerId, ...file } = await this.knex('files')
-      .select('id', 'name', 'size', 'ownerId')
+      .select('id', 'name', 'key', 'size', 'ownerId')
       .where({ id })
       .first();
     const owner = await this.knex('users')

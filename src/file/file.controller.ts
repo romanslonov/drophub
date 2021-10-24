@@ -36,10 +36,11 @@ export class FileController {
         console.error(error);
       });
 
-    const saving = (uploaded as ManagedUpload.SendData[]).map((item) => {
-      const file = files.find((f) => f.originalname === item.Key);
+    const saving = (uploaded as ManagedUpload.SendData[]).map((item, index) => {
+      const file = files[index];
       return this.fileService.create(req.user.id, boardId, {
-        name: item.Key,
+        name: file.originalname,
+        key: item.Key,
         size: file.size,
       });
     });

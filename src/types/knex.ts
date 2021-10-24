@@ -17,6 +17,7 @@ export interface Board {
 
 export interface File {
   id: number;
+  key: string;
   name: string;
   size: number;
   ownerId?: number;
