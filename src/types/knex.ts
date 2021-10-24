@@ -5,11 +5,13 @@ export interface User {
   name: string;
   email: string;
   password: string;
+  usage: number;
 }
 
 export interface Board {
   id: number;
   name: string;
+  starred?: boolean | number;
   ownerId?: number;
 
   owner?: Pick<User, 'id' | 'email' | 'name'>;
