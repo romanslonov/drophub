@@ -19,7 +19,7 @@ export class UploadService {
     const params = {
       Bucket: process.env.BUCKET_NAME,
       Body: file.buffer,
-      Key: file.originalname,
+      Key: `${Date.now()}-${file.originalname}`,
       ACL: 'public-read',
       CacheControl: 'max-age=604800',
       ContentType: file.mimetype,

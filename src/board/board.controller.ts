@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -19,13 +20,18 @@ export class BoardController {
   @Post()
   async create(@Body() data: CreateBoardDto, @Request() req) {
     const board = await this.boardService.create(data, req.user);
-    return board;
+
+    return { board };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async getBoards(@Request() req) {
     const boards = await this.boardService.getBoards(req.user);
+
+    return { boards };
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('starred')
   async getBoardsOverview(@Query() query, @Request() req) {
@@ -49,13 +55,14 @@ export class BoardController {
   async getBoard(@Param('id') id: number, @Request() req) {
     const board = await this.boardService.getBoard(id, req.user.id);
 
-    return board;
+    return { board };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/:id/files/')
   async getBoardFiles(@Param('id') id: number, @Request() req) {
     const files = await this.boardService.getBoardFiles(id, req.user.id);
-    return files;
+
+    return { files };
   }
 }
