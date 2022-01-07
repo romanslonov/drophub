@@ -21,6 +21,7 @@ export async function up(knex: Knex) {
   await knex.schema.createTable('files', (table) => {
     table.increments('id').primary();
     table.string('name').notNullable();
+    table.string('key').notNullable();
     table.integer('size').notNullable();
     table.integer('ownerId').unsigned().notNullable();
     table.integer('boardId').unsigned().notNullable();
