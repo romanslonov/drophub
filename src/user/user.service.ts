@@ -37,4 +37,8 @@ export class UserService {
 
     return user;
   }
+
+  async updateUserUsage(id: number, usage: number): Promise<User> {
+    return this.knex<User>('users').where({ id }).update({ usage });
+  }
 }
