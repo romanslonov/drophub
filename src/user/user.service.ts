@@ -39,6 +39,10 @@ export class UserService {
   }
 
   async updateUserUsage(id: number, usage: number): Promise<User> {
-    return this.knex<User>('users').where({ id }).update({ usage });
+    const user = await this.knex<User>('users').where({ id }).first();
+
+    return this.knex<User>('users')
+      .where({ id })
+      .update({ usage: usage + user.usage });
   }
 }
