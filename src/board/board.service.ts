@@ -128,7 +128,7 @@ export class BoardService {
     await this.getBoard(boardId, userId);
 
     const files = await this.knex
-      .select('id', 'name', 'key', 'size', 'ownerId')
+      .select('id', 'name', 'key', 'size', 'ownerId', 'uploadedAt', 'updatedAt')
       .from('files')
       .where({ boardId });
 

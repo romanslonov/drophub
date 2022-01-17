@@ -24,6 +24,7 @@ export interface File {
   size: number;
   ownerId?: number;
   boardId?: number;
+  uploadedAt: string;
 
   owner?: Pick<User, 'id' | 'email' | 'name'>;
 }

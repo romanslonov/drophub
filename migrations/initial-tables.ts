@@ -25,6 +25,13 @@ export async function up(knex: Knex) {
     table.integer('size').notNullable();
     table.integer('ownerId').unsigned().notNullable();
     table.integer('boardId').unsigned().notNullable();
+    table
+      .dateTime('uploadedAt')
+      .notNullable()
+      .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+    table
+      .dateTime('updatedAt')
+      .defaultTo(knex.raw('NULL ON UPDATE CURRENT_TIMESTAMP'));
     // foreign keys
     table.foreign('ownerId').references('users.id');
     table.foreign('boardId').references('boards.id');
